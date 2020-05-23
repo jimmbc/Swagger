@@ -1,0 +1,495 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Red Social"
+    },
+    "host": "localhost:3800",
+    "basePath": "/api",
+    "tags": [{
+            "name": "Usuario"
+        },
+        {
+            "name": "Publicaciones"
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/register": {
+            "post": {
+                "tags": [
+                    "Usuario"
+                ],
+                "summary": "Registra un usuario",
+                "description": "Registra un nuevo usuario",
+                "operationId": "Register",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters": [{
+                        "name": "name",
+                        "in": "formData",
+                        "description": "Nombres",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "surname",
+                        "in": "formData",
+                        "description": "Apellidos",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "ci",
+                        "in": "formData",
+                        "description": "Cedula de Identidad",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "exp",
+                        "in": "query",
+                        "description": "Cedula expedida en:",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "La Paz",
+                                "Cochabamba",
+                                "Samta Cruz",
+                                "Beni",
+                                "Pando",
+                                "Potosi",
+                                "Tarija",
+                                "Oruro",
+                                "Chuquisaca"
+                            ],
+                            "default": "La Paz"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "adress",
+                        "in": "formData",
+                        "description": "Direccion del usuario",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "description": "Email de usuario",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "Contraseña",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "nick",
+                        "in": "formData",
+                        "description": "Alias",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "role",
+                        "in": "query",
+                        "description": "Tipo de usuario",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "Cliente",
+                                "Trabajador"
+                            ],
+                            "default": "Cliente"
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registro correcto"
+                    },
+                    "400": {
+                        "description": "Ha ocurrido un error en la peticion"
+                    },
+                    "404": {
+                        "description": "No se ha registrado el usuario"
+                    },
+                    "409": {
+                        "description": "El usuario ya se encuentra registrado"
+                    }
+                },
+                "security": [{
+                    "user_auth": [
+                        "write:user",
+                        "read:user"
+                    ]
+                }]
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "Usuario"
+                ],
+                "summary": "Loggea un usuario",
+                "description": "Loggea un usuario",
+                "operationId": "Login",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters": [{
+                        "name": "email",
+                        "in": "formData",
+                        "description": "Email de usuario",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "Correo electronico del usuario",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login correcto"
+                    },
+                    "400": {
+                        "description": "Ha ocurrido un error en la peticion"
+                    },
+                    "401": {
+                        "description": "La contraseña o el usuario son incorrectos"
+                    },
+                    "404": {
+                        "description": "El usuario no se ha podido identificar"
+                    }
+                },
+                "security": [{
+                    "user_auth": [
+                        "write:user",
+                        "read:user"
+                    ]
+                }]
+            }
+        },
+        "/update-user": {
+            "put": {
+                "tags": [
+                    "Usuario"
+                ],
+                "summary": "Actualizar un usuario",
+                "description": "",
+                "operationId": "updateUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [{
+                    "in": "body",
+                    "name": "body",
+                    "description": "Usuario",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/User"
+                    }
+                }],
+                "responses": {
+                    "400": {
+                        "description": "ID invalido"
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    },
+                    "405": {
+                        "description": "Error de validacion"
+                    }
+                },
+                "security": [{
+                    "user_auth": [
+                        "write:user",
+                        "read:user"
+                    ]
+                }]
+            }
+        },
+        "/update-user/{Ci}": {
+            "get": {
+                "tags": [
+                    "Usuario"
+                ],
+                "summary": "Encontrar un usuario por su CI",
+                "description": "Retorna un solo usuario",
+                "operationId": "getUserByCI",
+                "produces": [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters": [{
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Token",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "Ci",
+                        "in": "path",
+                        "description": "CI del cliente",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operacion exitosa",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "400": {
+                        "description": "CI invalido"
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado"
+                    }
+                },
+                "security": [{
+                    "api_key": []
+                }]
+            }
+        },
+        "/Users": {
+            "get": {
+                "tags": [
+                    "Usuario"
+                ],
+                "summary": "Encontrar todos los usuarios",
+                "description": "Retorna todos los usuarios",
+                "operationId": "ReturnUsers",
+                "produces": [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters": [{
+                    "name": "Authorization",
+                    "in": "header",
+                    "description": "Token",
+                    "required": true,
+                    "type": "string"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Operacion exitosa",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "400": {
+                        "description": "Token invalido"
+                    },
+                    "404": {
+                        "description": "La petición no tiene la cabecera de autenticación"
+                    }
+                },
+                "security": [{
+                    "api_key": []
+                }]
+            }
+        },
+        "/Publications": {
+            "get": {
+                "tags": [
+                    "Publicaciones"
+                ],
+                "summary": "Encontrar todas las publicaciones",
+                "description": "Retorna todos las publicaciones",
+                "operationId": "ReturnPublication",
+                "produces": [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters": [{
+                    "name": "Authorization",
+                    "in": "header",
+                    "description": "Token",
+                    "required": true,
+                    "type": "string"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Operacion exitosa",
+                        "schema": {
+                            "$ref": "#/definitions/Publication"
+                        }
+                    },
+                    "404": {
+                        "description": "No hay publicaciones"
+                    }
+                },
+                "security": [{
+                    "api_key": []
+                }]
+            }
+        },
+        "/Publication/{publicationID}": {
+            "get": {
+                "tags": [
+                    "Publicaciones"
+                ],
+                "summary": "REtorna la publicacion por ID",
+                "description": "Retorna una sola publicacion",
+                "operationId": "ReturnPublicationId",
+                "produces": [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters": [{
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Token",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "publicationID",
+                        "in": "path",
+                        "description": "ID de la publicacion",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operacion exitosa",
+                        "schema": {
+                            "$ref": "#/definitions/Publication"
+                        }
+                    },
+                    "404": {
+                        "description": "No hay publicaciones"
+                    }
+                },
+                "security": [{
+                    "api_key": []
+                }]
+            }
+        }
+    },
+    "securityDefinitions": {
+        "user_auth": {
+            "type": "oauth2",
+            "authorizationUrl": "localhost:3800/api",
+            "flow": "implicit",
+            "scopes": {
+                "write:user": "Modificar los usuarios",
+                "read:user": "Leer los usuarios"
+            }
+        },
+        "api_key": {
+            "type": "apiKey",
+            "name": "api_key",
+            "in": "header"
+        }
+    },
+    "definitions": {
+        "User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "surname": {
+                    "type": "string"
+                },
+                "nick": {
+                    "type": "string"
+                },
+                "ci": {
+                    "type": "string"
+                },
+                "exp": {
+                    "type": "string"
+                },
+                "adress": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                }
+            },
+            "xml": {
+                "name": "User"
+            }
+        },
+        "Publication": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string"
+                },
+                "file": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "object"
+                }
+            },
+            "xml": {
+                "name": "Publication"
+            }
+        },
+        "Follow": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "object"
+                },
+                "followed": {
+                    "type": "object"
+                }
+            },
+            "xml": {
+                "name": "Follow"
+            }
+        }
+    }
+}
